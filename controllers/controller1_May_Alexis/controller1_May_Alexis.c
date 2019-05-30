@@ -11,7 +11,10 @@
  * <webots/differential_wheels.h>, etc.
  */
 #include <webots/robot.h>\
+#include <webots/led.h>
+
 #include <stdio.h>
+
 
 /*
  * You may want to add macros here.
@@ -36,22 +39,26 @@ int main(int argc, char **argv)
    */
     printf("Hello virtual world\n");
     int seconds_counter = 0;
+    int led_state;
 
+
+    WbDeviceTag my_led = wb_robot_get_device("led");
 
   /* main loop
    * Perform simulation steps of TIME_STEP milliseconds
    * and leave the loop when the simulation is over
    */
   while (wb_robot_step(TIME_STEP) != -1) {
-  printf("Doing some repetitive task\n");
-  printf("Time = %i\n", seconds_counter);
-  seconds_counter++;
+    printf("Doing some repetitive task\n");
+    printf("Time = %i\n", seconds_counter);
+    seconds_counter++;
     /*
      * Read the sensors :
      * Enter here functions to read sensor data, like:
      *  double val = wb_distance_sensor_get_value(my_sensor);
      */
-     
+     led_state = wb_led_get(my_led);
+     printf("Led value is %i\n", led_state);
 
     /* Process sensor data here */
 
@@ -59,6 +66,17 @@ int main(int argc, char **argv)
      * Enter here functions to send actuator commands, like:
      * wb_differential_wheels_set_speed(100.0,100.0);
      */
+     if (led_state == 0){
+      wb_led_set(my_led, 1);
+      led_state = wb_led_get(my_led);
+      
+      } else if (led_state == 1) {
+      
+      wb_led_set(my_led, 0);
+      led_state = wb_led_get(my_led);
+      }
+      
+
   };
 
   /* Enter your cleanup code here */
